@@ -1,0 +1,14 @@
+{
+    "name" : "patrickdevelopment/cir",
+    "description": "Centraal insolventieregister client",
+    "require": {
+        "php": "7.1.0",
+        "ext-dom": "*",
+        "guzzlehttp/guzzle": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "patrickDevelopment\\cir\\": "src/"
+        }
+    }
+}
