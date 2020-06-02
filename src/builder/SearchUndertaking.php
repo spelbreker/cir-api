@@ -132,14 +132,5 @@ class SearchUndertaking implements Builder
         return $rootElement;
     }
 
-    public function getRootObjectName(): string
-    {
-        // TODO: Implement getRootObjectName() method.
-    }
-
-    public function getUri(): string
-    {
-        // TODO: Implement getUri() method.
-    }
 }
 
