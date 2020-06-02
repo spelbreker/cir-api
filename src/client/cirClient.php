@@ -11,6 +11,7 @@ class cirClient
 {
 
     protected $client;
+    protected $response;
     protected $builder;
     private $username = '';
     private $password = '';
@@ -20,7 +21,7 @@ class cirClient
         $this->builder = $builder;
         $this->client = new Client([
             'headers' => [
-                "Content-Type" =>" application/soap+xml"
+                "Content-Type" => " application/soap+xml"
             ]
         ]);
     }
@@ -31,22 +32,25 @@ class cirClient
         $this->password = $password;
     }
 
-    public function execute() {
+    public function execute()
+    {
 
-        $soapPackage = soapPackageFactory::create($this->builder,$this->username,$this->password);
+        $soapPackage = soapPackageFactory::create($this->builder, $this->username, $this->password);
 
-        $r = $this->client->post( 'https://webservice.rechtspraak.nl/cir.asmx', [
+        $this->response = $this->client->post('https://webservice.rechtspraak.nl/cir.asmx', [
             'body' => $soapPackage->saveXML(),
 
         ]);
 
 
-
-        return $this->getResults($r->getBody());
+        if ($this->response->getStatusCode() === 200) {
+            return $this->getResults($this->response->getBody());
+        }
 
     }
 
-    public function getResults(string $body ) {
+    public function getResults(string $body) : array
+    {
         $xmlDoc = new \DOMDocument('1.0', 'UTF-8');
         $xmlDoc->loadXML($body);
 
