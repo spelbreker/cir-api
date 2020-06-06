@@ -5,9 +5,9 @@ namespace patrickDevelopment\cir\client;
 use GuzzleHttp\Client;
 use patrickDevelopment\cir\builder\Builder;
 use patrickDevelopment\cir\builder\helper\helper;
-use patrickDevelopment\cir\client\factory\soapPackageFactory;
+use patrickDevelopment\cir\client\factory\SoapPackageFactory;
 
-class cirClient
+class CirClient
 {
 
     protected $client;
@@ -28,13 +28,13 @@ class cirClient
         $this->password = $password;
     }
 
-    public function getPdf(string $kenmerk) {
+    public function fetchPdf(string $kenmerk) {
         $result = $this->client->get('https://insolventies.rechtspraak.nl/Services/VerslagenService/getPdf/'.$kenmerk);
         return $result->getBody();
 
     }
 
-    public function getPdfDownload(string $kenmerk) {
+    public function fetchPdfDownload(string $kenmerk) {
         $result = $this->getPdf($kenmerk);
 
         header("Content-type: application/octet-stream");
@@ -44,10 +44,10 @@ class cirClient
 
     }
 
-    public function execute()
+    public function fetchResults()
     {
 
-        $soapPackage = soapPackageFactory::create($this->builder, $this->username, $this->password);
+        $soapPackage = SoapPackageFactory::create($this->builder, $this->username, $this->password);
 
         $this->response = $this->client->post('https://webservice.rechtspraak.nl/cir.asmx', [
             'body' => $soapPackage->saveXML(),

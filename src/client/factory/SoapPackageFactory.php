@@ -5,7 +5,7 @@ namespace patrickDevelopment\cir\client\factory;
 use DOMDocument;
 use patrickDevelopment\cir\builder\Builder;
 
-class soapPackageFactory
+class SoapPackageFactory
 {
 
     public static function create(Builder $builder, string $username, string $password): \DOMDocument
