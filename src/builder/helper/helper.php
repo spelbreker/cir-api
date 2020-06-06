@@ -3,6 +3,7 @@
 
 namespace patrickDevelopment\cir\builder\helper;
 
+use DOMDocument;
 
 class helper
 {

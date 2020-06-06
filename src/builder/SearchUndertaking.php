@@ -3,8 +3,6 @@
 namespace patrickDevelopment\cir\builder;
 
 use DOMDocument;
-use Phpro\SoapClient\Type\RequestInterface;
-use Phpro\SoapClient\Type\ResultInterface;
 use patrickDevelopment\cir\builder\Builder;
 
 class SearchUndertaking implements Builder

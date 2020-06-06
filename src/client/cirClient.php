@@ -19,17 +19,29 @@ class cirClient
     public function __construct(Builder $builder)
     {
         $this->builder = $builder;
-        $this->client = new Client([
-            'headers' => [
-                "Content-Type" => " application/soap+xml"
-            ]
-        ]);
+        $this->client = new Client();
     }
 
     public function setAuthentication(string $username, string $password): void
     {
         $this->username = $username;
         $this->password = $password;
+    }
+
+    public function getPdf(string $kenmerk) {
+        $result = $this->client->get('https://insolventies.rechtspraak.nl/Services/VerslagenService/getPdf/'.$kenmerk);
+        return $result->getBody();
+
+    }
+
+    public function getPdfDownload(string $kenmerk) {
+        $result = $this->getPdf($kenmerk);
+
+        header("Content-type: application/octet-stream");
+        header("Content-disposition: attachment;filename=$kenmerk.pdf");
+
+        echo $result;
+
     }
 
     public function execute()
@@ -39,6 +51,9 @@ class cirClient
 
         $this->response = $this->client->post('https://webservice.rechtspraak.nl/cir.asmx', [
             'body' => $soapPackage->saveXML(),
+            'headers' => [
+                "Content-Type" => " application/soap+xml"
+            ]
 
         ]);
 
@@ -54,10 +69,12 @@ class cirClient
         $xmlDoc = new \DOMDocument('1.0', 'UTF-8');
         $xmlDoc->loadXML($body);
 
-        $results = helper::xml_to_array($xmlDoc)['soap:Envelope']['soap:Body'];
+        $results = helper::xml_to_array($xmlDoc)['soap:Envelope']['soap:Body'];;
 
-        if (array_key_exists('searchUndertakingResponse', $results)) {
+        if ($this->searchkeyInArray($results, 'publicatieLijst')) {
             return $this->extractPublications($results);
+        } elseif (!empty($this->searchkeyInArray($results, 'inspubWebserviceInsolvente'))) {
+            return $this->searchkeyInArray($results, 'inspubWebserviceInsolvente')['inspubWebserviceInsolvente'];
         }
 
         return $results;
@@ -74,7 +91,7 @@ class cirClient
 
     public function searchkeyInArray(array $array, string $key)
     {
-        $results = array();
+        $search_results = array();
 
         // if it is array
         if (is_array($array)) {
@@ -82,18 +99,20 @@ class cirClient
             // if array has required key and value
             // matched store result
             if (isset($array[$key])) {
-                return $results[] = $array;
+                return $array;
             }
 
             // Iterate for each element in array
             foreach ($array as $subarray) {
 
-                // recur through each element and append result
-                $results = array_merge($results,
-                    $this->searchkeyInArray($subarray, $key));
+                if (is_array($subarray)) {
+                    // recur through each element and append result
+                    $search_results = array_merge($search_results,
+                        $this->searchkeyInArray($subarray, $key));
+                }
             }
 
-            return $results;
+            return $search_results;
         }
     }
 
