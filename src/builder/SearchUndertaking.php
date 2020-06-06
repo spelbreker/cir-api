@@ -13,11 +13,6 @@ class SearchUndertaking implements Builder
     /**
      * @var string
      */
-    private $uri = 'searchUndertaking';
-
-    /**
-     * @var string
-     */
     private $name = null;
 
     /**
@@ -37,11 +32,6 @@ class SearchUndertaking implements Builder
 
     /**
      * Constructor
-     *
-     * @var string $name
-     * @var string $commercialRegisterID
-     * @var string $postalCode
-     * @var int $houseNumber
      */
     public function __construct()
     {
@@ -122,12 +112,24 @@ class SearchUndertaking implements Builder
 
         $rootElement = $XMLDoc->createElement('cir:searchUndertaking');
 
-        $rootElement->appendChild(
-            $XMLDoc->createElement('cir:postalCode',$this->getPostalCode() )
-        );
-        $rootElement->appendChild(
-            $XMLDoc->createElement('cir:houseNumber',$this->getHouseNumber())
-        );
+        if (!is_null($this->postalCode)) {
+            $rootElement->appendChild(
+                $XMLDoc->createElement('cir:postalCode', $this->getPostalCode())
+            );
+            $rootElement->appendChild(
+                $XMLDoc->createElement('cir:houseNumber', $this->getHouseNumber())
+            );
+        }
+        if (!is_null($this->commercialRegisterID)) {
+            $rootElement->appendChild(
+                $XMLDoc->createElement('cir:commercialRegisterID', $this->getCommercialRegisterID())
+            );
+        }
+        if (!is_null($this->name)) {
+            $rootElement->appendChild(
+                $XMLDoc->createElement('cir:name', $this->getName())
+            );
+        }
 
         return $rootElement;
     }

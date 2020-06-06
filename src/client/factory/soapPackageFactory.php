@@ -76,7 +76,6 @@ class soapPackageFactory
         );
 
 //        // XML CONTENT
-//        // @TODO must come form builder
 //        $rootElement = $XMLDoc->createElement('cir:searchUndertaking');
 //        $rootNode = $body->appendChild($rootElement);
 //
